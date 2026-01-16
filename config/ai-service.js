@@ -4,13 +4,19 @@ const https = require('https');
 
 const API_KEY = process.env.GEMINI_API_KEY;
 // Use more stable model names - fallback chain
-const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'models/gemini-1.5-flash';
+const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'models/gemini-2.5-flash';
 const FALLBACK_MODELS = [
   'models/gemini-1.5-flash',
   'models/gemini-1.5-pro',
   'models/gemini-pro',
   'models/gemini-flash'
 ];
+
+// Log configuration on startup
+console.log('🔧 AI Service Configuration:');
+console.log('  - API Key:', API_KEY ? '✅ Set (' + API_KEY.substring(0, 10) + '...)' : '❌ Missing');
+console.log('  - Default Model:', DEFAULT_MODEL);
+console.log('  - Fallback Models:', FALLBACK_MODELS.join(', '));
 
 // System prompt for medical assistant
 const SYSTEM_PROMPT = `You are an AI-powered virtual medical assistant designed to provide safe, accurate, ethical, and easy-to-understand health guidance for a web-based application used by many people, especially rural and underserved populations.
@@ -112,25 +118,31 @@ function makeGeminiRequest(modelName, postData, retryCount = 0, maxRetries = 3) 
             resolve(text);
           } else if (response.error) {
             const errorMsg = response.error.message || 'Unknown error';
+            const errorCode = response.error.code || 'UNKNOWN';
             console.error('❌ Gemini API Error:', errorMsg);
+            console.error('   Error Code:', errorCode);
+            console.error('   Model:', modelName);
+            console.error('   Retry Count:', retryCount);
             
             // Check if it's a retryable error
             const isRetryable = errorMsg.includes('overloaded') || 
                                errorMsg.includes('quota') || 
                                errorMsg.includes('rate limit') ||
                                errorMsg.includes('503') ||
-                               errorMsg.includes('429');
+                               errorMsg.includes('429') ||
+                               errorCode === 503 ||
+                               errorCode === 429;
             
             if (isRetryable && retryCount < maxRetries) {
               const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff
-              console.log(`⏳ Retrying in ${delay}ms...`);
+              console.log(`⏳ Retrying in ${delay}ms... (Attempt ${retryCount + 1}/${maxRetries})`);
               setTimeout(() => {
                 makeGeminiRequest(modelName, postData, retryCount + 1, maxRetries)
                   .then(resolve)
                   .catch(reject);
               }, delay);
             } else {
-              reject(new Error(`Gemini API error: ${errorMsg}`));
+              reject(new Error(`Gemini API error: ${errorMsg} (Code: ${errorCode})`));
             }
           } else {
             console.error('❌ Unexpected response:', data);

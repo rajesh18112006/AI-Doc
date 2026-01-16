@@ -308,13 +308,23 @@ Follow the required format in your response.`;
 
   } catch (error) {
     console.error('Error in check-side-effects:', error);
+    console.error('Error stack:', error.stack);
+    console.error('Error name:', error.name);
+    
     let errorMessage = 'Error checking side effects. Please try again later.';
     if (error.message.includes('overloaded') || error.message.includes('quota')) {
       errorMessage = 'The AI service is currently busy. Please try again in a few moments.';
+    } else if (error.message.includes('API_KEY') || error.message.includes('not set')) {
+      errorMessage = 'AI service configuration error. Please contact support.';
+      console.error('⚠️  CRITICAL: API Key issue detected!');
+    } else if (error.message.includes('timeout')) {
+      errorMessage = 'Request timed out. Please try again.';
     }
+    
     res.status(500).json({ 
       error: errorMessage,
-      message: error.message 
+      message: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });
@@ -350,6 +360,9 @@ app.listen(PORT, () => {
   console.log(`🏥 Medical Assistant Server running on http://localhost:${PORT}`);
   console.log(`📋 API endpoints available at http://localhost:${PORT}/api`);
   console.log(`🌐 Open http://localhost:${PORT} in your browser`);
-  console.log(`🤖 Using AI Model: ${process.env.GEMINI_MODEL || 'models/gemini-2.5-flash'}`);
+  console.log(`🤖 Using AI Model: ${process.env.GEMINI_MODEL || 'models/gemini-1.5-flash'}`);
   console.log(`🔑 API Key: ${process.env.GEMINI_API_KEY ? '✅ Configured' : '❌ Missing'}`);
+  if (!process.env.GEMINI_API_KEY) {
+    console.error('⚠️  WARNING: GEMINI_API_KEY is not set! API will not work.');
+  }
 });
