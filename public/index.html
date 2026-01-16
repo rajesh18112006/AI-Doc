@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Medical Assistant - Your Trusted Health Companion</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-lg">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="bi bi-heart-pulse-fill me-2 fs-4"></i>
+                <span class="fw-bold">MediCare AI</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#consultation" data-section="consultation">
+                            <i class="bi bi-clipboard-pulse me-1"></i> Consultation
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#medicine" data-section="medicine">
+                            <i class="bi bi-capsule me-1"></i> Medicine Info
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#side-effects" data-section="side-effects">
+                            <i class="bi bi-exclamation-triangle me-1"></i> Side Effects
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1 class="display-4 fw-bold text-white mb-4">
+                            Your Trusted Virtual <span class="text-warning">Medical Assistant</span>
+                        </h1>
+                        <p class="lead text-white-50 mb-4">
+                            Get instant, safe, and reliable health guidance powered by advanced AI. 
+                            Designed especially for rural and underserved communities.
+                        </p>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <div class="feature-badge">
+                                <i class="bi bi-shield-check text-success"></i>
+                                <span>Safe & Ethical</span>
+                            </div>
+                            <div class="feature-badge">
+                                <i class="bi bi-globe text-info"></i>
+                                <span>Rural Friendly</span>
+                            </div>
+                            <div class="feature-badge">
+                                <i class="bi bi-clock text-warning"></i>
+                                <span>24/7 Available</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <div class="floating-card card-1">
+                            <i class="bi bi-thermometer-half"></i>
+                            <span>Symptom Analysis</span>
+                        </div>
+                        <div class="floating-card card-2">
+                            <i class="bi bi-capsule"></i>
+                            <span>Medicine Info</span>
+                        </div>
+                        <div class="floating-card card-3">
+                            <i class="bi bi-heart-pulse"></i>
+                            <span>Health Guidance</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Disclaimer Banner -->
+    <div class="alert alert-warning alert-dismissible fade show m-0 border-0 rounded-0" role="alert">
+        <div class="container">
+            <strong><i class="bi bi-exclamation-triangle-fill me-2"></i>Important:</strong> 
+            This information is for guidance only and is not a substitute for a licensed medical professional. 
+            Always consult a doctor for proper diagnosis and treatment.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container py-5">
+            
+            <!-- Consultation Section -->
+            <section id="consultation" class="content-section">
+                <div class="section-header text-center mb-5">
+                    <h2 class="display-5 fw-bold mb-3">
+                        <i class="bi bi-clipboard-pulse text-primary me-2"></i>
+                        Health Consultation
+                    </h2>
+                    <p class="text-muted lead">Tell us about your symptoms and get AI-powered health insights</p>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="card shadow-lg border-0">
+                            <div class="card-body p-4">
+                                <form id="consultationForm">
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="bi bi-calendar-event text-primary me-2"></i>Your Age *
+                                            </label>
+                                            <input type="number" class="form-control form-control-lg" 
+                                                   id="age" name="age" min="1" max="120" required 
+                                                   placeholder="Enter your age">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="bi bi-person text-primary me-2"></i>Gender
+                                            </label>
+                                            <select class="form-select form-select-lg" id="gender" name="gender">
+                                                <option value="">Select gender</option>
+                                                <option value="male">Male</option>
+                                                <option value="female">Female</option>
+                                                <option value="other">Other</option>
+                                                <option value="prefer-not-to-say">Prefer not to say</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label fw-semibold">
+                                                <i class="bi bi-file-text text-primary me-2"></i>Describe Your Symptoms *
+                                            </label>
+                                            <textarea class="form-control" id="symptoms" name="symptoms" 
+                                                      rows="4" required 
+                                                      placeholder="Example: I have been experiencing headache and mild fever for 2 days..."></textarea>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="bi bi-clock-history text-primary me-2"></i>Duration
+                                            </label>
+                                            <select class="form-select form-select-lg" id="duration" name="duration">
+                                                <option value="">Select duration</option>
+                                                <option value="few hours">Few hours</option>
+                                                <option value="1 day">1 day</option>
+                                                <option value="2-3 days">2-3 days</option>
+                                                <option value="4-7 days">4-7 days</option>
+                                                <option value="more than a week">More than a week</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">
+                                                <i class="bi bi-activity text-primary me-2"></i>Severity *
+                                            </label>
+                                            <div class="btn-group w-100" role="group">
+                                                <input type="radio" class="btn-check" name="severity" 
+                                                       id="severity-mild" value="mild" required>
+                                                <label class="btn btn-outline-success" for="severity-mild">
+                                                    <i class="bi bi-check-circle me-1"></i>Mild
+                                                </label>
+
+                                                <input type="radio" class="btn-check" name="severity" 
+                                                       id="severity-moderate" value="moderate" required>
+                                                <label class="btn btn-outline-warning" for="severity-moderate">
+                                                    <i class="bi bi-exclamation-circle me-1"></i>Moderate
+                                                </label>
+
+                                                <input type="radio" class="btn-check" name="severity" 
+                                                       id="severity-severe" value="severe" required>
+                                                <label class="btn btn-outline-danger" for="severity-severe">
+                                                    <i class="bi bi-x-circle me-1"></i>Severe
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label fw-semibold">
+                                                <i class="bi bi-heart-pulse text-primary me-2"></i>Existing Medical Conditions
+                                            </label>
+                                            <input type="text" class="form-control form-control-lg" 
+                                                   id="existingConditions" name="existingConditions" 
+                                                   placeholder="e.g., Diabetes, High BP, Asthma (leave blank if none)">
+                                        </div>
+
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
+                                                <i class="bi bi-search me-2"></i>Analyze Symptoms with AI
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <div id="consultationResult" class="mt-4" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Medicine Info Section -->
+            <section id="medicine" class="content-section mt-5">
+                <div class="section-header text-center mb-5">
+                    <h2 class="display-5 fw-bold mb-3">
+                        <i class="bi bi-capsule text-primary me-2"></i>
+                        Medicine Information
+                    </h2>
+                    <p class="text-muted lead">Get detailed information about medicines by name or image</p>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Text Input -->
+                    <div class="col-lg-6">
+                        <div class="card shadow-lg border-0 h-100">
+                            <div class="card-body p-4">
+                                <h5 class="card-title mb-4">
+                                    <i class="bi bi-type text-primary me-2"></i>Search by Name
+                                </h5>
+                                <form id="medicineForm">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Medicine Name *</label>
+                                        <input type="text" class="form-control form-control-lg" 
+                                               id="medicineName" name="medicineName" required 
+                                               placeholder="e.g., Paracetamol, ORS, Antacid">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="bi bi-search me-2"></i>Get Information
+                                    </button>
+                                </form>
+                                <div id="medicineResult" class="mt-4" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="col-lg-6">
+                        <div class="card shadow-lg border-0 h-100">
+                            <div class="card-body p-4">
+                                <h5 class="card-title mb-4">
+                                    <i class="bi bi-image text-primary me-2"></i>Upload Medicine Image
+                                </h5>
+                                <form id="medicineImageForm" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Medicine Image *</label>
+                                        <input type="file" class="form-control form-control-lg" 
+                                               id="medicineImage" name="medicineImage" 
+                                               accept="image/*" required>
+                                        <small class="text-muted">Supported: JPG, PNG, GIF, WebP (Max 5MB)</small>
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="bi bi-upload me-2"></i>Analyze Image
+                                    </button>
+                                </form>
+                                <div id="medicineImageResult" class="mt-4" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medicine Suggestions -->
+                <div class="row mt-4">
+                    <div class="col-lg-8 mx-auto">
+                        <div class="card shadow-lg border-0">
+                            <div class="card-body p-4">
+                                <h5 class="card-title mb-4">
+                                    <i class="bi bi-lightbulb text-warning me-2"></i>Safe Medicine Suggestions
+                                </h5>
+                                <form id="suggestionForm">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Describe Your Symptoms *</label>
+                                        <textarea class="form-control" id="suggestionSymptoms" 
+                                                  name="suggestionSymptoms" rows="3" required 
+                                                  placeholder="e.g., headache and mild fever"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning w-100">
+                                        <i class="bi bi-magic me-2"></i>Get AI Suggestions
+                                    </button>
+                                </form>
+                                <div id="suggestionResult" class="mt-4" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Side Effects Section -->
+            <section id="side-effects" class="content-section mt-5">
+                <div class="section-header text-center mb-5">
+                    <h2 class="display-5 fw-bold mb-3">
+                        <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+                        Check Medicine Side Effects
+                    </h2>
+                    <p class="text-muted lead">Experiencing discomfort? Let AI help you understand if it's a side effect</p>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card shadow-lg border-0">
+                            <div class="card-body p-4">
+                                <form id="sideEffectsForm">
+                                    <div class="mb-4">
+                                        <label class="form-label fw-semibold">
+                                            <i class="bi bi-capsule text-primary me-2"></i>Medicine Name *
+                                        </label>
+                                        <input type="text" class="form-control form-control-lg" 
+                                               id="sideEffectMedicine" name="sideEffectMedicine" required 
+                                               placeholder="e.g., Paracetamol">
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label fw-semibold">
+                                            <i class="bi bi-clipboard-pulse text-primary me-2"></i>What side effects are you experiencing? *
+                                        </label>
+                                        <textarea class="form-control" id="reportedSideEffects" 
+                                                  name="reportedSideEffects" rows="4" required 
+                                                  placeholder="Describe the discomfort or side effects you're experiencing"></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-danger btn-lg w-100 py-3">
+                                        <i class="bi bi-search me-2"></i>Check Side Effects
+                                    </button>
+                                </form>
+
+                                <div id="sideEffectsResult" class="mt-4" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-heart-pulse-fill me-2"></i>MediCare AI
+                    </h5>
+                    <p class="text-white-50">
+                        Your trusted virtual medical assistant providing safe, ethical, and accessible health guidance.
+                    </p>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h5 class="fw-bold mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#consultation" class="text-white-50 text-decoration-none">Consultation</a></li>
+                        <li><a href="#medicine" class="text-white-50 text-decoration-none">Medicine Info</a></li>
+                        <li><a href="#side-effects" class="text-white-50 text-decoration-none">Side Effects</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h5 class="fw-bold mb-3">Important Notice</h5>
+                    <p class="text-white-50 small">
+                        This information is for guidance only and is not a substitute for a licensed medical professional. 
+                        Always consult a doctor for proper diagnosis and treatment.
+                    </p>
+                </div>
+            </div>
+            <hr class="my-4 bg-white-50">
+            <div class="text-center text-white-50">
+                <p class="mb-0">&copy; 2024 MediCare AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="app.js"></script>
+</body>
+</html>

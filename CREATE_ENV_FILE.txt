@@ -1,0 +1,109 @@
+HOW TO CREATE .env FILE - STEP BY STEP
+========================================
+
+METHOD 1: Using Notepad (Easiest)
+-----------------------------------
+1. Open Notepad (or any text editor)
+2. Copy and paste the following content:
+
+# Google Gemini API Configuration
+GEMINI_API_KEY=AIzaSyAJIrfUO12TQC_fVyYLw5PMOSpMwh1rJxQ
+GEMINI_MODEL=gemini-1.5-flash
+
+# MySQL Database Configuration
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=medical_assistant
+DB_PORT=3306
+
+# Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# File Upload Configuration
+MAX_FILE_SIZE=5242880
+UPLOAD_DIR=uploads
+
+3. Click "File" -> "Save As"
+4. Navigate to: C:\projectsss\Medical
+5. In "File name" field, type: .env
+6. In "Save as type" dropdown, select "All Files (*.*)"
+7. Click "Save"
+
+IMPORTANT: Make sure the file is named exactly ".env" (with the dot at the beginning)
+If you see ".env.txt", you need to rename it to ".env"
+
+
+METHOD 2: Using PowerShell
+---------------------------
+1. Open PowerShell in the project folder
+2. Run this command:
+
+@"
+# Google Gemini API Configuration
+GEMINI_API_KEY=AIzaSyAJIrfUO12TQC_fVyYLw5PMOSpMwh1rJxQ
+GEMINI_MODEL=gemini-1.5-flash
+
+# MySQL Database Configuration
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=medical_assistant
+DB_PORT=3306
+
+# Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# File Upload Configuration
+MAX_FILE_SIZE=5242880
+UPLOAD_DIR=uploads
+"@ | Out-File -FilePath .env -Encoding utf8
+
+
+METHOD 3: Using Command Prompt
+-------------------------------
+1. Open Command Prompt in the project folder
+2. Run this command:
+
+echo # Google Gemini API Configuration > .env
+echo GEMINI_API_KEY=AIzaSyAJIrfUO12TQC_fVyYLw5PMOSpMwh1rJxQ >> .env
+echo GEMINI_MODEL=gemini-1.5-flash >> .env
+echo. >> .env
+echo # MySQL Database Configuration >> .env
+echo DB_HOST=localhost >> .env
+echo DB_USER=root >> .env
+echo DB_PASSWORD= >> .env
+echo DB_NAME=medical_assistant >> .env
+echo DB_PORT=3306 >> .env
+echo. >> .env
+echo # Server Configuration >> .env
+echo PORT=3000 >> .env
+echo NODE_ENV=development >> .env
+echo. >> .env
+echo # File Upload Configuration >> .env
+echo MAX_FILE_SIZE=5242880 >> .env
+echo UPLOAD_DIR=uploads >> .env
+
+
+VERIFY THE FILE WAS CREATED
+----------------------------
+After creating the file, verify it exists:
+- In File Explorer, go to C:\projectsss\Medical
+- Make sure "Show hidden files" is enabled in View settings
+- You should see a file named ".env"
+
+Or in PowerShell/Command Prompt, run:
+dir .env
+
+
+NEXT STEPS AFTER CREATING .env
+-------------------------------
+1. If your MySQL has a password, edit .env and add it:
+   DB_PASSWORD=your_mysql_password
+
+2. Then run: npm start
+
+
+
