@@ -1396,3 +1396,58 @@ a, button, input, select, textarea {
     background: var(--primary-color);
     color: white;
 }
+
+/* Hospital Finder Styles - OpenStreetMap Implementation */
+#hospitalMap {
+    border-radius: 20px;
+    z-index: 1;
+}
+
+.hospital-item {
+    transition: all 0.3s ease;
+    border-left: 3px solid #dc3545 !important;
+}
+
+.hospital-item:hover {
+    background-color: #f8f9fa !important;
+    transform: translateX(5px);
+    box-shadow: var(--shadow-md);
+}
+
+.hospital-item.active {
+    background-color: #e7f3ff !important;
+    border-left-color: var(--primary-color) !important;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Leaflet Map Customization */
+.leaflet-container {
+    font-family: 'Inter', 'Poppins', sans-serif;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+}
+
+.leaflet-popup-content {
+    margin: 15px;
+    font-size: 14px;
+}
+
+.leaflet-marker-icon {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+/* Marker Cluster Styles */
+.marker-cluster-small {
+    background-color: rgba(99, 102, 241, 0.6);
+}
+
+.marker-cluster-medium {
+    background-color: rgba(236, 72, 153, 0.6);
+}
+
+.marker-cluster-large {
+    background-color: rgba(239, 68, 68, 0.6);
+}

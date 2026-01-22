@@ -15,6 +15,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS - OpenStreetMap (100% Free, No API Key Required) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <!-- Leaflet Marker Cluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 </head>
 <body>
     <!-- Navigation -->
@@ -31,18 +38,40 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link active" href="#consultation" data-section="consultation">
-                            <i class="bi bi-clipboard-pulse me-1"></i> Consultation
+                            <i class="bi bi-clipboard-pulse me-1"></i> <span data-translate="consultation">Consultation</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#medicine" data-section="medicine">
-                            <i class="bi bi-capsule me-1"></i> Medicine Info
+                            <i class="bi bi-capsule me-1"></i> <span data-translate="medicineInfo">Medicine Info</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#side-effects" data-section="side-effects">
-                            <i class="bi bi-exclamation-triangle me-1"></i> Side Effects
+                            <i class="bi bi-exclamation-triangle me-1"></i> <span data-translate="sideEffects">Side Effects</span>
                         </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#hospitals" data-section="hospitals">
+                            <i class="bi bi-hospital me-1"></i> <span data-translate="hospitals">Find Hospitals</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#skin-analysis" data-section="skin-analysis">
+                            <i class="bi bi-heart-pulse me-1"></i> <span data-translate="skinWoundAnalysis">Skin Analysis</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-translate me-1"></i> <span id="currentLang">English</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" onclick="setLanguage('en'); return false;"><i class="bi bi-check me-2" id="check-en"></i> English</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setLanguage('ta'); return false;"><i class="bi bi-check me-2" id="check-ta" style="display:none;"></i> தமிழ் (Tamil)</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setLanguage('hi'); return false;"><i class="bi bi-check me-2" id="check-hi" style="display:none;"></i> हिंदी (Hindi)</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setLanguage('te'); return false;"><i class="bi bi-check me-2" id="check-te" style="display:none;"></i> తెలుగు (Telugu)</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setLanguage('kn'); return false;"><i class="bi bi-check me-2" id="check-kn" style="display:none;"></i> ಕನ್ನಡ (Kannada)</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -106,9 +135,8 @@
     <!-- Disclaimer Banner -->
     <div class="alert alert-warning alert-dismissible fade show m-0 border-0 rounded-0" role="alert">
         <div class="container">
-            <strong><i class="bi bi-exclamation-triangle-fill me-2"></i>Important:</strong> 
-            This information is for guidance only and is not a substitute for a licensed medical professional. 
-            Always consult a doctor for proper diagnosis and treatment.
+            <strong><i class="bi bi-exclamation-triangle-fill me-2"></i><span data-translate="important">Important</span>:</strong> 
+            <span data-translate="disclaimer">This information is for guidance only and is not a substitute for a licensed medical professional. Always consult a doctor for proper diagnosis and treatment.</span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     </div>
@@ -122,9 +150,9 @@
                 <div class="section-header text-center mb-5">
                     <h2 class="display-5 fw-bold mb-3">
                         <i class="bi bi-clipboard-pulse text-primary me-2"></i>
-                        Health Consultation
+                        <span data-translate="healthConsultation">Health Consultation</span>
                     </h2>
-                    <p class="text-muted lead">Tell us about your symptoms and get AI-powered health insights</p>
+                    <p class="text-muted lead" data-translate="consultationSubtitle">Tell us about your symptoms and get AI-powered health insights</p>
                 </div>
 
                 <div class="row justify-content-center">
@@ -135,87 +163,109 @@
                                     <div class="row g-4">
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold">
-                                                <i class="bi bi-calendar-event text-primary me-2"></i>Your Age *
+                                                <i class="bi bi-calendar-event text-primary me-2"></i><span data-translate="yourAge">Your Age</span> *
                                             </label>
                                             <input type="number" class="form-control form-control-lg" 
                                                    id="age" name="age" min="1" max="120" required 
-                                                   placeholder="Enter your age">
+                                                   data-placeholder="yourAge">
                                         </div>
 
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold">
-                                                <i class="bi bi-person text-primary me-2"></i>Gender
+                                                <i class="bi bi-person text-primary me-2"></i><span data-translate="gender">Gender</span>
                                             </label>
                                             <select class="form-select form-select-lg" id="gender" name="gender">
-                                                <option value="">Select gender</option>
-                                                <option value="male">Male</option>
-                                                <option value="female">Female</option>
-                                                <option value="other">Other</option>
-                                                <option value="prefer-not-to-say">Prefer not to say</option>
+                                                <option value="" data-translate="selectGender">Select gender</option>
+                                                <option value="male" data-translate="male">Male</option>
+                                                <option value="female" data-translate="female">Female</option>
+                                                <option value="other" data-translate="other">Other</option>
+                                                <option value="prefer-not-to-say" data-translate="preferNotToSay">Prefer not to say</option>
                                             </select>
                                         </div>
 
                                         <div class="col-12">
                                             <label class="form-label fw-semibold">
-                                                <i class="bi bi-file-text text-primary me-2"></i>Describe Your Symptoms *
+                                                <i class="bi bi-file-text text-primary me-2"></i><span data-translate="describeSymptoms">Describe Your Symptoms</span> *
                                             </label>
-                                            <textarea class="form-control" id="symptoms" name="symptoms" 
-                                                      rows="4" required 
-                                                      placeholder="Example: I have been experiencing headache and mild fever for 2 days..."></textarea>
+                                            <div class="input-group">
+                                                <textarea class="form-control" id="symptoms" name="symptoms" 
+                                                          rows="4" required 
+                                                          data-placeholder="symptomsPlaceholder"></textarea>
+                                                <button type="button" class="btn btn-outline-primary" id="voiceInputBtn" title="Speak Symptoms">
+                                                    <i class="bi bi-mic-fill"></i>
+                                                </button>
+                                            </div>
+                                            <div id="voiceStatus" class="mt-2" style="display: none;">
+                                                <span class="badge bg-info"><i class="bi bi-mic me-1"></i><span data-translate="listening">Listening...</span></span>
+                                                <button type="button" class="btn btn-sm btn-danger ms-2" id="stopListeningBtn">
+                                                    <i class="bi bi-stop-fill me-1"></i><span data-translate="stopListening">Stop</span>
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold">
-                                                <i class="bi bi-clock-history text-primary me-2"></i>Duration
+                                                <i class="bi bi-clock-history text-primary me-2"></i><span data-translate="duration">Duration</span>
                                             </label>
                                             <select class="form-select form-select-lg" id="duration" name="duration">
-                                                <option value="">Select duration</option>
-                                                <option value="few hours">Few hours</option>
-                                                <option value="1 day">1 day</option>
-                                                <option value="2-3 days">2-3 days</option>
-                                                <option value="4-7 days">4-7 days</option>
-                                                <option value="more than a week">More than a week</option>
+                                                <option value="" data-translate="selectDuration">Select duration</option>
+                                                <option value="few hours" data-translate="fewHours">Few hours</option>
+                                                <option value="1 day" data-translate="oneDay">1 day</option>
+                                                <option value="2-3 days" data-translate="twoThreeDays">2-3 days</option>
+                                                <option value="4-7 days" data-translate="fourSevenDays">4-7 days</option>
+                                                <option value="more than a week" data-translate="moreThanWeek">More than a week</option>
                                             </select>
                                         </div>
 
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold">
-                                                <i class="bi bi-activity text-primary me-2"></i>Severity *
+                                                <i class="bi bi-activity text-primary me-2"></i><span data-translate="severity">Severity</span> *
                                             </label>
                                             <div class="btn-group w-100" role="group">
                                                 <input type="radio" class="btn-check" name="severity" 
                                                        id="severity-mild" value="mild" required>
                                                 <label class="btn btn-outline-success" for="severity-mild">
-                                                    <i class="bi bi-check-circle me-1"></i>Mild
+                                                    <i class="bi bi-check-circle me-1"></i><span data-translate="mild">Mild</span>
                                                 </label>
 
                                                 <input type="radio" class="btn-check" name="severity" 
                                                        id="severity-moderate" value="moderate" required>
                                                 <label class="btn btn-outline-warning" for="severity-moderate">
-                                                    <i class="bi bi-exclamation-circle me-1"></i>Moderate
+                                                    <i class="bi bi-exclamation-circle me-1"></i><span data-translate="moderate">Moderate</span>
                                                 </label>
 
                                                 <input type="radio" class="btn-check" name="severity" 
                                                        id="severity-severe" value="severe" required>
                                                 <label class="btn btn-outline-danger" for="severity-severe">
-                                                    <i class="bi bi-x-circle me-1"></i>Severe
+                                                    <i class="bi bi-x-circle me-1"></i><span data-translate="severe">Severe</span>
                                                 </label>
                                             </div>
                                         </div>
 
                                         <div class="col-12">
                                             <label class="form-label fw-semibold">
-                                                <i class="bi bi-heart-pulse text-primary me-2"></i>Existing Medical Conditions
+                                                <i class="bi bi-heart-pulse text-primary me-2"></i><span data-translate="existingConditions">Existing Medical Conditions</span>
                                             </label>
                                             <input type="text" class="form-control form-control-lg" 
                                                    id="existingConditions" name="existingConditions" 
-                                                   placeholder="e.g., Diabetes, High BP, Asthma (leave blank if none)">
+                                                   data-placeholder="existingConditionsPlaceholder">
                                         </div>
 
                                         <div class="col-12">
                                             <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
-                                                <i class="bi bi-search me-2"></i>Analyze Symptoms with AI
+                                                <i class="bi bi-search me-2"></i><span data-translate="analyzeSymptoms">Analyze Symptoms with AI</span>
                                             </button>
+                                        </div>
+                                        <div class="col-12 mt-2">
+                                            <button type="button" class="btn btn-outline-success btn-lg w-100 py-3" id="voiceOutputBtn" style="display: none;">
+                                                <i class="bi bi-volume-up-fill me-2"></i><span data-translate="listenToConsultation">Listen to Consultation</span>
+                                            </button>
+                                            <div id="speakingStatus" class="mt-2 text-center" style="display: none;">
+                                                <span class="badge bg-success"><i class="bi bi-volume-up me-1"></i><span data-translate="speaking">Speaking...</span></span>
+                                                <button type="button" class="btn btn-sm btn-danger ms-2" id="stopSpeakingBtn">
+                                                    <i class="bi bi-stop-fill me-1"></i><span data-translate="stopSpeaking">Stop</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
@@ -232,9 +282,9 @@
                 <div class="section-header text-center mb-5">
                     <h2 class="display-5 fw-bold mb-3">
                         <i class="bi bi-capsule text-primary me-2"></i>
-                        Medicine Information
+                        <span data-translate="medicineInformation">Medicine Information</span>
                     </h2>
-                    <p class="text-muted lead">Get detailed information about medicines by name or image</p>
+                    <p class="text-muted lead" data-translate="medicineSubtitle">Get detailed information about medicines by name or image</p>
                 </div>
 
                 <div class="row g-4">
@@ -243,17 +293,17 @@
                         <div class="card shadow-lg border-0 h-100">
                             <div class="card-body p-4">
                                 <h5 class="card-title mb-4">
-                                    <i class="bi bi-type text-primary me-2"></i>Search by Name
+                                    <i class="bi bi-type text-primary me-2"></i><span data-translate="searchByName">Search by Name</span>
                                 </h5>
                                 <form id="medicineForm">
                                     <div class="mb-3">
-                                        <label class="form-label fw-semibold">Medicine Name *</label>
+                                        <label class="form-label fw-semibold" data-translate="medicineName">Medicine Name</label> *
                                         <input type="text" class="form-control form-control-lg" 
                                                id="medicineName" name="medicineName" required 
-                                               placeholder="e.g., Paracetamol, ORS, Antacid">
+                                               data-placeholder="medicineNamePlaceholder">
                                     </div>
                                     <button type="submit" class="btn btn-primary w-100">
-                                        <i class="bi bi-search me-2"></i>Get Information
+                                        <i class="bi bi-search me-2"></i><span data-translate="getInformation">Get Information</span>
                                     </button>
                                 </form>
                                 <div id="medicineResult" class="mt-4" style="display: none;"></div>
@@ -266,18 +316,18 @@
                         <div class="card shadow-lg border-0 h-100">
                             <div class="card-body p-4">
                                 <h5 class="card-title mb-4">
-                                    <i class="bi bi-image text-primary me-2"></i>Upload Medicine Image
+                                    <i class="bi bi-image text-primary me-2"></i><span data-translate="uploadImage">Upload Medicine Image</span>
                                 </h5>
                                 <form id="medicineImageForm" enctype="multipart/form-data">
                                     <div class="mb-3">
-                                        <label class="form-label fw-semibold">Medicine Image *</label>
+                                        <label class="form-label fw-semibold" data-translate="medicineImage">Medicine Image</label> *
                                         <input type="file" class="form-control form-control-lg" 
                                                id="medicineImage" name="medicineImage" 
                                                accept="image/*" required>
-                                        <small class="text-muted">Supported: JPG, PNG, GIF, WebP (Max 5MB)</small>
+                                        <small class="text-muted" data-translate="supportedFormats">Supported: JPG, PNG, GIF, WebP (Max 5MB)</small>
                                     </div>
                                     <button type="submit" class="btn btn-success w-100">
-                                        <i class="bi bi-upload me-2"></i>Analyze Image
+                                        <i class="bi bi-upload me-2"></i><span data-translate="analyzeImage">Analyze Image</span>
                                     </button>
                                 </form>
                                 <div id="medicineImageResult" class="mt-4" style="display: none;"></div>
@@ -292,20 +342,140 @@
                         <div class="card shadow-lg border-0">
                             <div class="card-body p-4">
                                 <h5 class="card-title mb-4">
-                                    <i class="bi bi-lightbulb text-warning me-2"></i>Safe Medicine Suggestions
+                                    <i class="bi bi-lightbulb text-warning me-2"></i><span data-translate="safeSuggestions">Safe Medicine Suggestions</span>
                                 </h5>
                                 <form id="suggestionForm">
                                     <div class="mb-3">
-                                        <label class="form-label fw-semibold">Describe Your Symptoms *</label>
+                                        <label class="form-label fw-semibold" data-translate="describeSymptoms">Describe Your Symptoms</label> *
                                         <textarea class="form-control" id="suggestionSymptoms" 
                                                   name="suggestionSymptoms" rows="3" required 
-                                                  placeholder="e.g., headache and mild fever"></textarea>
+                                                  data-placeholder="suggestionPlaceholder"></textarea>
                                     </div>
                                     <button type="submit" class="btn btn-warning w-100">
-                                        <i class="bi bi-magic me-2"></i>Get AI Suggestions
+                                        <i class="bi bi-magic me-2"></i><span data-translate="getSuggestions">Get AI Suggestions</span>
                                     </button>
                                 </form>
                                 <div id="suggestionResult" class="mt-4" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hospital Finder Section -->
+            <section id="hospitals" class="content-section mt-5">
+                <div class="section-header text-center mb-5">
+                    <h2 class="display-5 fw-bold mb-3">
+                        <i class="bi bi-hospital text-primary me-2"></i>
+                        <span data-translate="findHospitals">Find Nearby Hospitals</span>
+                    </h2>
+                    <p class="text-muted lead" data-translate="hospitalSubtitle">Search for hospitals near your location</p>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="card shadow-lg border-0 mb-4">
+                            <div class="card-body p-4">
+                                <form id="hospitalSearchForm">
+                                    <div class="row g-3">
+                                        <div class="col-md-8">
+                                            <label class="form-label fw-semibold">
+                                                <i class="bi bi-geo-alt text-primary me-2"></i><span data-translate="enterLocation">Enter Location</span>
+                                            </label>
+                                            <input type="text" class="form-control form-control-lg" 
+                                                   id="locationInput" name="location" required 
+                                                   data-placeholder="locationPlaceholder">
+                                        </div>
+                                        <div class="col-md-4 d-flex align-items-end">
+                                            <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
+                                                <i class="bi bi-search me-2"></i><span data-translate="searchHospitals">Search Hospitals</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="card shadow-lg border-0" style="height: 500px;">
+                                    <div class="card-body p-0">
+                                        <div id="hospitalMap" style="width: 100%; height: 100%; border-radius: 20px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card shadow-lg border-0" style="max-height: 500px; overflow-y: auto;">
+                                    <div class="card-body p-4">
+                                        <h5 class="mb-3"><i class="bi bi-list-ul text-primary me-2"></i><span data-translate="findHospitals">Nearby Hospitals</span></h5>
+                                        <div id="hospitalList">
+                                            <p class="text-muted text-center py-5" data-translate="hospitalSubtitle">Enter a location to search for hospitals</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skin/Wound Analysis Section -->
+            <section id="skin-analysis" class="content-section mt-5">
+                <div class="section-header text-center mb-5">
+                    <h2 class="display-5 fw-bold mb-3">
+                        <i class="bi bi-heart-pulse text-primary me-2"></i>
+                        <span data-translate="skinWoundAnalysis">Skin & Wound Analysis</span>
+                    </h2>
+                    <p class="text-muted lead" data-translate="skinWoundSubtitle">Upload a photo or capture directly from camera of your skin condition, wound, rash, or swelling for AI analysis</p>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card shadow-lg border-0">
+                            <div class="card-body p-4">
+                                <form id="skinAnalysisForm" enctype="multipart/form-data">
+                                    <!-- Camera Capture Section -->
+                                    <div class="mb-4">
+                                        <label class="form-label fw-semibold">
+                                            <i class="bi bi-camera text-primary me-2"></i><span data-translate="captureFromCamera">Capture from Camera</span>
+                                        </label>
+                                        <div class="d-flex gap-2 mb-3">
+                                            <button type="button" class="btn btn-outline-primary" id="startCameraBtn">
+                                                <i class="bi bi-camera-video me-2"></i><span data-translate="startCamera">Start Camera</span>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-success" id="captureImageBtn" style="display: none;">
+                                                <i class="bi bi-camera-fill me-2"></i><span data-translate="capturePhoto">Capture Photo</span>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger" id="stopCameraBtn" style="display: none;">
+                                                <i class="bi bi-stop-circle me-2"></i><span data-translate="stopCamera">Stop Camera</span>
+                                            </button>
+                                        </div>
+                                        <div id="cameraPreview" class="mb-3" style="display: none;">
+                                            <video id="videoElement" autoplay playsinline style="width: 100%; max-height: 300px; border-radius: 8px; background: #000;"></video>
+                                            <canvas id="canvasElement" style="display: none;"></canvas>
+                                        </div>
+                                        <div id="capturedImagePreview" class="mb-3" style="display: none;">
+                                            <img id="capturedImage" src="" alt="Captured Image" style="width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid #0d6efd;">
+                                        </div>
+                                    </div>
+
+                                    <!-- File Upload Section -->
+                                    <div class="mb-4">
+                                        <label class="form-label fw-semibold">
+                                            <i class="bi bi-image text-primary me-2"></i><span data-translate="uploadSkinImage">Upload Skin/Wound Image</span>
+                                        </label>
+                                        <input type="file" class="form-control form-control-lg" 
+                                               id="skinImage" name="skinImage" 
+                                               accept="image/*">
+                                        <small class="text-muted" data-translate="supportedFormats">Supported: JPG, PNG, GIF, WebP (Max 5MB)</small>
+                                        <p class="text-muted small mt-2" data-translate="skinImagePlaceholder">Upload a clear photo of the affected area or capture from camera</p>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
+                                        <i class="bi bi-search me-2"></i><span data-translate="analyzeSkinImage">Analyze Skin Condition</span>
+                                    </button>
+                                </form>
+                                <div id="skinAnalysisResult" class="mt-4" style="display: none;"></div>
                             </div>
                         </div>
                     </div>
@@ -317,9 +487,9 @@
                 <div class="section-header text-center mb-5">
                     <h2 class="display-5 fw-bold mb-3">
                         <i class="bi bi-exclamation-triangle text-danger me-2"></i>
-                        Check Medicine Side Effects
+                        <span data-translate="checkSideEffects">Check Medicine Side Effects</span>
                     </h2>
-                    <p class="text-muted lead">Experiencing discomfort? Let AI help you understand if it's a side effect</p>
+                    <p class="text-muted lead" data-translate="sideEffectsSubtitle">Experiencing discomfort? Let AI help you understand if it's a side effect</p>
                 </div>
 
                 <div class="row justify-content-center">
@@ -329,24 +499,24 @@
                                 <form id="sideEffectsForm">
                                     <div class="mb-4">
                                         <label class="form-label fw-semibold">
-                                            <i class="bi bi-capsule text-primary me-2"></i>Medicine Name *
+                                            <i class="bi bi-capsule text-primary me-2"></i><span data-translate="sideEffectMedicine">Medicine Name</span> *
                                         </label>
                                         <input type="text" class="form-control form-control-lg" 
                                                id="sideEffectMedicine" name="sideEffectMedicine" required 
-                                               placeholder="e.g., Paracetamol">
+                                               data-placeholder="sideEffectMedicinePlaceholder">
                                     </div>
 
                                     <div class="mb-4">
                                         <label class="form-label fw-semibold">
-                                            <i class="bi bi-clipboard-pulse text-primary me-2"></i>What side effects are you experiencing? *
+                                            <i class="bi bi-clipboard-pulse text-primary me-2"></i><span data-translate="whatSideEffects">What side effects are you experiencing?</span> *
                                         </label>
                                         <textarea class="form-control" id="reportedSideEffects" 
                                                   name="reportedSideEffects" rows="4" required 
-                                                  placeholder="Describe the discomfort or side effects you're experiencing"></textarea>
+                                                  data-placeholder="sideEffectsPlaceholder"></textarea>
                                     </div>
 
                                     <button type="submit" class="btn btn-danger btn-lg w-100 py-3">
-                                        <i class="bi bi-search me-2"></i>Check Side Effects
+                                        <i class="bi bi-search me-2"></i><span data-translate="checkSideEffectsBtn">Check Side Effects</span>
                                     </button>
                                 </form>
 
@@ -373,16 +543,16 @@
                     </p>
                 </div>
                 <div class="col-lg-4 mb-4">
-                    <h5 class="fw-bold mb-3">Quick Links</h5>
+                    <h5 class="fw-bold mb-3" data-translate="quickLinks">Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#consultation" class="text-white-50 text-decoration-none">Consultation</a></li>
-                        <li><a href="#medicine" class="text-white-50 text-decoration-none">Medicine Info</a></li>
-                        <li><a href="#side-effects" class="text-white-50 text-decoration-none">Side Effects</a></li>
+                        <li><a href="#consultation" class="text-white-50 text-decoration-none" data-translate="consultation">Consultation</a></li>
+                        <li><a href="#medicine" class="text-white-50 text-decoration-none" data-translate="medicineInfo">Medicine Info</a></li>
+                        <li><a href="#side-effects" class="text-white-50 text-decoration-none" data-translate="sideEffects">Side Effects</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4 mb-4">
-                    <h5 class="fw-bold mb-3">Important Notice</h5>
-                    <p class="text-white-50 small">
+                    <h5 class="fw-bold mb-3" data-translate="importantNotice">Important Notice</h5>
+                    <p class="text-white-50 small" data-translate="disclaimer">
                         This information is for guidance only and is not a substitute for a licensed medical professional. 
                         Always consult a doctor for proper diagnosis and treatment.
                     </p>
@@ -390,13 +560,23 @@
             </div>
             <hr class="my-4 bg-white-50">
             <div class="text-center text-white-50">
-                <p class="mb-0">&copy; 2024 MediCare AI. All rights reserved.</p>
+                <p class="mb-0">&copy; 2024 MediCare AI. <span data-translate="allRightsReserved">All rights reserved.</span></p>
             </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet JS - OpenStreetMap (100% Free, No API Key Required) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <!-- Leaflet Marker Cluster JS -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <!-- Translations -->
+    <script src="translations.js"></script>
+    <!-- Hospital Finder Utilities (Free OpenStreetMap Implementation) -->
+    <script src="hospital-finder.js"></script>
     <!-- Custom JS -->
     <script src="app.js"></script>
 </body>

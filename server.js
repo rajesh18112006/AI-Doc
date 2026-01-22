@@ -117,7 +117,10 @@ app.post('/api/analyze-symptoms', async (req, res) => {
       });
     }
 
-    // Build prompt for Gemini
+    // Get user's selected language
+    const userLang = req.body.userLang || 'en';
+    
+    // Build prompt for Gemini - AI will respond directly in the selected language
     const prompt = `Please analyze the following patient information and provide health guidance:
 
 Patient Information:
@@ -130,14 +133,15 @@ Patient Information:
 
 Please provide a comprehensive analysis following the required format.`;
 
-    // Get AI response
-    console.log('📝 Request received for symptom analysis');
-    const aiResponse = await generateTextResponse(prompt);
+    // Get AI response directly in the selected language
+    console.log(`📝 Request received for symptom analysis (Language: ${userLang})`);
+    const aiResponse = await generateTextResponse(prompt, 'consultation', userLang);
     console.log('✅ AI response generated successfully');
 
     res.json({
       emergency: false,
-      response: aiResponse
+      response: aiResponse,
+      language: userLang
     });
 
   } catch (error) {
@@ -173,6 +177,8 @@ app.post('/api/medicine-info', async (req, res) => {
       return res.status(400).json({ error: 'Medicine name is required' });
     }
 
+    const userLang = req.body.userLang || 'en';
+    
     const prompt = `A user wants to know about the medicine: "${medicineName}"
 
 Please provide information about this medicine following the required format. Include:
@@ -184,7 +190,7 @@ Please provide information about this medicine following the required format. In
 
 If you cannot identify the medicine, please say so clearly and recommend consulting a doctor or pharmacist.`;
 
-    const aiResponse = await generateTextResponse(prompt);
+    const aiResponse = await generateTextResponse(prompt, 'medicine-info', userLang);
 
     res.json({ response: aiResponse });
 
@@ -208,6 +214,7 @@ app.post('/api/medicine-info-image', upload.single('medicineImage'), async (req,
       return res.status(400).json({ error: 'Medicine image is required' });
     }
 
+    const userLang = req.body.userLang || 'en';
     const imagePath = req.file.path;
     const imageBuffer = fs.readFileSync(imagePath);
     const mimeType = req.file.mimetype;
@@ -222,7 +229,7 @@ app.post('/api/medicine-info-image', upload.single('medicineImage'), async (req,
 
 If you cannot clearly identify the medicine from the image, please say so and recommend consulting a doctor or pharmacist with the medicine.`;
 
-    const aiResponse = await generateImageResponse(prompt, imageBuffer, mimeType);
+    const aiResponse = await generateImageResponse(prompt, imageBuffer, mimeType, userLang);
 
     res.json({ response: aiResponse, imagePath: `/uploads/${path.basename(imagePath)}` });
 
@@ -248,6 +255,8 @@ app.post('/api/suggest-medicines', async (req, res) => {
       return res.status(400).json({ error: 'Symptoms are required' });
     }
 
+    const userLang = req.body.userLang || 'en';
+    
     const prompt = `A user is experiencing: "${symptoms}"
 
 Please suggest ONLY safe over-the-counter (OTC) medicines that might help, such as:
@@ -264,13 +273,206 @@ IMPORTANT:
 
 Follow the required format in your response.`;
 
-    const aiResponse = await generateTextResponse(prompt);
+    const aiResponse = await generateTextResponse(prompt, 'medicine-suggestion', userLang);
 
     res.json({ response: aiResponse });
 
   } catch (error) {
     console.error('Error in suggest-medicines:', error);
     let errorMessage = 'Error suggesting medicines. Please try again later.';
+    if (error.message.includes('overloaded') || error.message.includes('quota')) {
+      errorMessage = 'The AI service is currently busy. Please try again in a few moments.';
+    }
+    res.status(500).json({ 
+      error: errorMessage,
+      message: error.message 
+    });
+  }
+});
+
+// Search Hospitals Endpoint
+app.post('/api/search-hospitals', async (req, res) => {
+  try {
+    const { location, coords } = req.body;
+    
+    if (!location) {
+      return res.status(400).json({ error: 'Location is required' });
+    }
+
+    // If Google Maps API key is available, use Places API
+    const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+    
+    if (GOOGLE_MAPS_API_KEY) {
+      try {
+        // First geocode the location
+        const https = require('https');
+        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=${GOOGLE_MAPS_API_KEY}`;
+        
+        const geocodeData = await new Promise((resolve, reject) => {
+          https.get(geocodeUrl, (response) => {
+            let data = '';
+            response.on('data', (chunk) => { data += chunk; });
+            response.on('end', () => {
+              try {
+                resolve(JSON.parse(data));
+              } catch (e) {
+                reject(e);
+              }
+            });
+          }).on('error', reject);
+        });
+        
+        if (geocodeData.results && geocodeData.results.length > 0) {
+          const locationCoords = geocodeData.results[0].geometry.location;
+          
+          // Search for nearby hospitals
+          const placesUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${locationCoords.lat},${locationCoords.lng}&radius=10000&type=hospital&key=${GOOGLE_MAPS_API_KEY}`;
+          
+          const placesData = await new Promise((resolve, reject) => {
+            https.get(placesUrl, (response) => {
+              let data = '';
+              response.on('data', (chunk) => { data += chunk; });
+              response.on('end', () => {
+                try {
+                  resolve(JSON.parse(data));
+                } catch (e) {
+                  reject(e);
+                }
+              });
+            }).on('error', reject);
+          });
+          
+          if (placesData.results && placesData.results.length > 0) {
+            // Get details for each hospital
+            const hospitals = await Promise.all(
+              placesData.results.slice(0, 10).map(async (place) => {
+                const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&fields=name,formatted_address,formatted_phone_number,geometry&key=${GOOGLE_MAPS_API_KEY}`;
+                
+                const detailsData = await new Promise((resolve, reject) => {
+                  https.get(detailsUrl, (response) => {
+                    let data = '';
+                    response.on('data', (chunk) => { data += chunk; });
+                    response.on('end', () => {
+                      try {
+                        resolve(JSON.parse(data));
+                      } catch (e) {
+                        reject(e);
+                      }
+                    });
+                  }).on('error', reject);
+                });
+                
+                if (detailsData.result) {
+                  return {
+                    name: detailsData.result.name,
+                    formatted_address: detailsData.result.formatted_address,
+                    formatted_phone_number: detailsData.result.formatted_phone_number || null,
+                    lat: detailsData.result.geometry.location.lat,
+                    lng: detailsData.result.geometry.location.lng,
+                    place_id: place.place_id
+                  };
+                }
+                return null;
+              })
+            );
+            
+            const validHospitals = hospitals.filter(h => h !== null);
+            return res.json({ hospitals: validHospitals });
+          }
+        }
+      } catch (error) {
+        console.error('Error using Google Places API:', error);
+        // Fall through to return empty result
+      }
+    }
+    
+    // If no API key or API failed, return empty result
+    res.json({ hospitals: [] });
+    
+  } catch (error) {
+    console.error('Error in search-hospitals:', error);
+    res.status(500).json({ 
+      error: 'Error searching hospitals',
+      message: error.message 
+    });
+  }
+});
+
+// Translate Text Endpoint
+app.post('/api/translate', async (req, res) => {
+  try {
+    const { text, targetLang, sourceLang = 'en' } = req.body;
+    
+    if (!text || !targetLang) {
+      return res.status(400).json({ error: 'Text and target language are required' });
+    }
+    
+    // If source and target are the same, return original text
+    if (sourceLang === targetLang) {
+      return res.json({ translatedText: text });
+    }
+    
+    // Use Gemini for translation
+    const prompt = `Translate the following text from ${sourceLang === 'en' ? 'English' : sourceLang === 'ta' ? 'Tamil' : 'Hindi'} to ${targetLang === 'en' ? 'English' : targetLang === 'ta' ? 'Tamil' : 'Hindi'}. 
+    
+    Text to translate: "${text}"
+    
+    Provide only the translated text without any explanations or additional text.`;
+    
+    try {
+      const translatedText = await generateTextResponse(prompt);
+      res.json({ translatedText: translatedText.trim() });
+    } catch (error) {
+      console.error('Translation error:', error);
+      // Fallback: return original text
+      res.json({ translatedText: text });
+    }
+    
+  } catch (error) {
+    console.error('Error in translate:', error);
+    res.status(500).json({ 
+      error: 'Error translating text',
+      message: error.message 
+    });
+  }
+});
+
+// Skin/Wound Analysis Endpoint
+app.post('/api/analyze-skin', upload.single('skinImage'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Skin image is required' });
+    }
+
+    const userLang = req.body.userLang || 'en';
+    const imagePath = req.file.path;
+    const imageBuffer = fs.readFileSync(imagePath);
+    const mimeType = req.file.mimetype;
+
+    const prompt = `A user has uploaded an image of a skin condition, wound, rash, swelling, redness, pimple, or boil. 
+
+Please analyze the image and provide a SHORT, CONCISE response following the required format with only main content:
+- Problem: What you see and what it resembles (1-2 sentences)
+- Solution: Severity assessment (1 sentence)
+- Remedies: Brief care steps (bullet points)
+- Medicine: 1-2 over-the-counter suggestions (1-2 sentences, no dosage)
+- When to See Doctor: Warning signs (bullet points)
+
+Keep it very brief and practical. Use simple words.`;
+
+    console.log(`📝 Request received for skin analysis (Language: ${userLang})`);
+    const aiResponse = await generateImageResponse(prompt, imageBuffer, mimeType, userLang);
+    console.log('✅ Skin analysis response generated successfully');
+
+    res.json({ 
+      response: aiResponse, 
+      imagePath: `/uploads/${path.basename(imagePath)}`,
+      language: userLang
+    });
+
+  } catch (error) {
+    console.error('Error in analyze-skin:', error);
+    let errorMessage = 'Error analyzing skin condition. Please try again later.';
     if (error.message.includes('overloaded') || error.message.includes('quota')) {
       errorMessage = 'The AI service is currently busy. Please try again in a few moments.';
     }
@@ -292,6 +494,8 @@ app.post('/api/check-side-effects', async (req, res) => {
       });
     }
 
+    const userLang = req.body.userLang || 'en';
+    
     const prompt = `A user is taking the medicine "${medicineName}" and experiencing: "${sideEffects}"
 
 Please analyze if these are common or serious side effects. Provide guidance on:
@@ -302,7 +506,7 @@ Please analyze if these are common or serious side effects. Provide guidance on:
 
 Follow the required format in your response.`;
 
-    const aiResponse = await generateTextResponse(prompt);
+    const aiResponse = await generateTextResponse(prompt, 'side-effects', userLang);
 
     res.json({ response: aiResponse });
 
